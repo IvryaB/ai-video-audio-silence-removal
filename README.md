@@ -1,99 +1,60 @@
-Documentation for Audio and Video Processing Script
+# AI Video and Audio Silence Removal
 
-## Overview
-This script processes a video file by detecting and removing silent segments and filler words from the associated audio track. 
-It uses `moviepy`, `pydub`, and `whisper` for audio extraction, silence detection, speech transcription, and video editing. 
-The output is a cleaned video with unnecessary pauses and filler words removed.
+## Описание
 
-## Required Files
-To ensure the script runs correctly, the following files should be present in the project directory:
+Этот скрипт использует модель **Whisper** для распознавания речи и удаления пауз и слов-паразитов из аудио и видео файлов. Скрипт автоматически анализирует аудио, находит паузы, удаляет их и затем генерирует обработанное видео с плавными переходами между оставшимися сегментами.
 
-- `input_video.mp4` - The video file to be processed.
-- `extracted_audio.wav` - The extracted audio file (generated during execution).
-- `output_video.mp4` - The final processed video (generated during execution).
+## Как установить и запустить
 
-Files not listed here can be considered unnecessary and removed if they are not used elsewhere.
+### Шаг 1: Установка зависимостей
 
-## Dependencies
-Make sure the following dependencies are installed before running the script:
-
-- `moviepy`
-- `pydub`
-- `whisper`
-- `ffmpeg`
-- `torch`
-
-## Functions
-
-### detect_silences(audio_path, min_silence_len=1000, silence_thresh=-50)
-Detects silent segments in an audio file.
-
-**Parameters:**
-- `audio_path` (str): Path to the audio file.
-- `min_silence_len` (int): Minimum silence duration in milliseconds.
-- `silence_thresh` (int): Silence threshold in decibels.
-
-**Returns:**
-- List of tuples representing silent intervals (start, end in seconds).
-
-### transcribe_audio_with_whisper(audio_path, model_name="large", device="cuda")
-Transcribes the given audio file using OpenAI's Whisper model.
-
-**Parameters:**
-- `audio_path` (str): Path to the audio file.
-- `model_name` (str): Whisper model size.
-- `device` (str): Computation device (`"cuda"` or `"cpu"`).
-
-**Returns:**
-- JSON object containing the transcription results.
-
-### get_filler_word_intervals(result, filler_word_patterns)
-Identifies timestamps of filler words in the Whisper transcription.
-
-**Parameters:**
-- `result` (dict): Whisper transcription output.
-- `filler_word_patterns` (list): Regular expressions for filler words.
-
-**Returns:**
-- List of tuples representing filler word intervals (start, end in seconds).
-
-### combine_intervals(silences, fillers, buffer=0.1)
-Merges overlapping intervals of silences and filler words.
-
-**Parameters:**
-- `silences` (list): List of silence intervals.
-- `fillers` (list): List of filler word intervals.
-- `buffer` (float): Additional padding around each interval.
-
-**Returns:**
-- List of merged intervals.
-
-### remove_intervals_from_audio_video(video_path, intervals_to_remove, output_video_path)
-Removes specified intervals from a video file with smooth transitions.
-
-**Parameters:**
-- `video_path` (str): Path to the input video file.
-- `intervals_to_remove` (list): Intervals to be removed.
-- `output_video_path` (str): Path to save the processed video.
-
-## Execution Steps
-1. Extracts audio from the video.
-2. Detects silent segments in the audio.
-3. Transcribes audio using Whisper and identifies filler words.
-4. Merges detected intervals.
-5. Removes unwanted intervals and exports the final video.
-
-## Usage
-Ensure you have an input video file (`input_video.mp4`) and run the script. The processed video will be saved as `output_video.mp4`.
+Перед тем как начать, убедитесь, что у вас установлен Python 3.6+ и выполните установку необходимых библиотек:
 
 ```bash
-python script.py
+pip install moviepy pydub whisper
 ```
 
-## Notes
-- Adjust `silence_thresh` and `min_silence_len` to fine-tune silence detection.
-- Modify `filler_word_patterns` to customize filler word removal.
-- Ensure `ffmpeg` is installed and accessible for `moviepy` and `pydub` to function correctly.
+### Шаг 2: Загрузка модели Whisper
 
-## License
-This script is open-source and provided as-is without any warranty.
+Модель Whisper будет автоматически загружена при первом запуске скрипта. Веса модели хранятся в интернете, и для их загрузки требуется подключение к интернету.
+
+### Шаг 3: Запуск скрипта
+
+1. **Подготовьте видео файл** — убедитесь, что у вас есть видео файл в формате `.mp4`, с которого вы хотите извлечь аудио.
+   
+2. **Настройте параметры**:
+   Вы можете настроить параметры для детекции пауз и порога тишины в функции **detect_silences()**, а также модель Whisper и устройство в **transcribe_audio_with_whisper()**.
+
+3. **Запустите скрипт**:
+   После настройки параметров и путей к файлам просто запустите скрипт:
+
+   ```bash
+   python script_name.py
+   ```
+
+4. **Вывод**:
+   Результатом выполнения будет видео файл без пауз и слов-паразитов, сохранённый в **output_video.mp4**.
+
+## Параметры настройки
+
+- **min_silence_len** — минимальная длина паузы для её детекции в миллисекундах. По умолчанию — 1000 (1 секунда).
+- **silence_thresh** — порог тишины в децибелах. По умолчанию — -50.
+- **model_name** — модель Whisper, которую нужно использовать. Возможные значения: **base**, **small**, **medium**, **large**.
+- **device** — устройство для работы с моделью Whisper. Возможные значения: **cuda** (для использования GPU) или **cpu**.
+
+## Как работает скрипт
+
+1. **Извлечение аудио** из видео с помощью библиотеки **moviepy**.
+2. **Обработка аудио** с использованием **pydub** для обнаружения пауз и слов-паразитов.
+3. **Распознавание речи** с использованием модели **Whisper** для транскрипции и поиска слов-паразитов.
+4. **Удаление пауз и слов-паразитов** из видео с помощью **moviepy** и плавные переходы между сегментами.
+
+## Примечания
+
+- Для более точных результатов вы можете выбрать более мощную модель Whisper, но она потребует больше вычислительных ресурсов.
+- Время обработки может быть значительным для видео с длительным временем или высоким разрешением.
+- Если у вас есть видео с большим количеством пауз или слов-паразитов, скрипт может занять больше времени на анализ и обработку.
+
+## Лицензия
+
+Этот проект распространяется под лицензией MIT. См. файл LICENSE для подробностей.
