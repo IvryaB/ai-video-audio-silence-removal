@@ -1,60 +1,56 @@
-# AI Video and Audio Silence Removal
+AI Video and Audio Silence Removal
 
-## Описание
+Description
 
-Этот скрипт использует модель **Whisper** для распознавания речи и удаления пауз и слов-паразитов из аудио и видео файлов. Скрипт автоматически анализирует аудио, находит паузы, удаляет их и затем генерирует обработанное видео с плавными переходами между оставшимися сегментами.
+This script uses the Whisper model for speech recognition and removes pauses and filler words from audio and video files. The script automatically analyzes the audio, detects pauses, removes them, and then generates a processed video with smooth transitions between the remaining segments.
 
-## Как установить и запустить
+Installation and Usage
 
-### Шаг 1: Установка зависимостей
+Step 1: Install Dependencies
 
-Перед тем как начать, убедитесь, что у вас установлен Python 3.6+ и выполните установку необходимых библиотек:
+Before starting, ensure that you have Python 3.6+ installed and run the following command to install the required libraries:
 
-```bash
 pip install moviepy pydub whisper
-```
 
-### Шаг 2: Загрузка модели Whisper
+Step 2: Downloading the Whisper Model
 
-Модель Whisper будет автоматически загружена при первом запуске скрипта. Веса модели хранятся в интернете, и для их загрузки требуется подключение к интернету.
+The Whisper model will be automatically downloaded on the first run of the script. The model weights are stored online, and an internet connection is required for the download.
 
-### Шаг 3: Запуск скрипта
+Step 3: Running the Script
 
-1. **Подготовьте видео файл** — убедитесь, что у вас есть видео файл в формате `.mp4`, с которого вы хотите извлечь аудио.
+1. Prepare the video file – Make sure you have a video file in .mp4 format from which you want to extract the audio.
    
-2. **Настройте параметры**:
-   Вы можете настроить параметры для детекции пауз и порога тишины в функции **detect_silences()**, а также модель Whisper и устройство в **transcribe_audio_with_whisper()**.
+2. Adjust parameters:
+   You can configure the settings for pause detection and silence threshold in the detect_silences() function, as well as the Whisper model and device in transcribe_audio_with_whisper().
 
-3. **Запустите скрипт**:
-   После настройки параметров и путей к файлам просто запустите скрипт:
+3. Run the script:
+   After configuring the parameters and file paths, simply execute the script:
 
-   ```bash
    python script_name.py
-   ```
 
-4. **Вывод**:
-   Результатом выполнения будет видео файл без пауз и слов-паразитов, сохранённый в **output_video.mp4**.
+4. Output:
+   The result will be a video file without pauses and filler words, saved as output_video.mp4.
 
-## Параметры настройки
+Configuration Parameters
 
-- **min_silence_len** — минимальная длина паузы для её детекции в миллисекундах. По умолчанию — 1000 (1 секунда).
-- **silence_thresh** — порог тишины в децибелах. По умолчанию — -50.
-- **model_name** — модель Whisper, которую нужно использовать. Возможные значения: **base**, **small**, **medium**, **large**.
-- **device** — устройство для работы с моделью Whisper. Возможные значения: **cuda** (для использования GPU) или **cpu**.
+- min_silence_len – Minimum length of a pause to be detected, in milliseconds. Default is 1000 (1 second).
+- silence_thresh – Silence threshold in decibels. Default is -50.
+- model_name – The Whisper model to use. Possible values: base, small, medium, large.
+- device – The device for running the Whisper model. Possible values: cuda (for GPU) or cpu.
 
-## Как работает скрипт
+How the Script Works
 
-1. **Извлечение аудио** из видео с помощью библиотеки **moviepy**.
-2. **Обработка аудио** с использованием **pydub** для обнаружения пауз и слов-паразитов.
-3. **Распознавание речи** с использованием модели **Whisper** для транскрипции и поиска слов-паразитов.
-4. **Удаление пауз и слов-паразитов** из видео с помощью **moviepy** и плавные переходы между сегментами.
+1. Extracting audio from the video using the moviepy library.
+2. Processing audio using pydub to detect pauses and filler words.
+3. Speech recognition with the Whisper model for transcription and filler word detection.
+4. Removing pauses and filler words from the video using moviepy, ensuring smooth transitions between segments.
 
-## Примечания
+Notes
 
-- Для более точных результатов вы можете выбрать более мощную модель Whisper, но она потребует больше вычислительных ресурсов.
-- Время обработки может быть значительным для видео с длительным временем или высоким разрешением.
-- Если у вас есть видео с большим количеством пауз или слов-паразитов, скрипт может занять больше времени на анализ и обработку.
+- For more accurate results, you can select a more powerful Whisper model, but it will require more computational resources.
+- Processing time may be significant for videos with long durations or high resolutions.
+- If your video contains many pauses or filler words, the script may take longer to analyze and process.
 
-## Лицензия
+License
 
-Этот проект распространяется под лицензией MIT. См. файл LICENSE для подробностей.
+This project is distributed under the MIT license. See the LICENSE file for details.
